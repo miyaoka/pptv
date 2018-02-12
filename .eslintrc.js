@@ -13,9 +13,9 @@ module.exports = {
     'plugin:vue/essential'
   ],
   // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
+  plugins: ['vue'],
   // add your custom rules here
-  rules: {}
+  rules: {
+    'space-before-function-paren': ['error', 'never']
+  }
 }
