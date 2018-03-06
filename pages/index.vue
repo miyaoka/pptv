@@ -1,6 +1,7 @@
 <template>
   <section class="container">
-    <h1>articles</h1>
+    <h1>プープーテレビ検索</h1>
+    <small><a href="http://portal.nifty.com/cs/dpztv/list/1.htm" target="_blank" rel="noopener">プープーテレビ</a>の全動画を検索します</small>
 
     <div>
       著者：<select v-model="selectedAuthor">
