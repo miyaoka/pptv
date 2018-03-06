@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 module.exports = {
+  plugins: ['~/plugins/infinite-loading.js', '~/plugins/datepicker.js'],
   modules: ['@nuxtjs/axios'],
   env: {
     PPTV_DATA_URL: process.env.PPTV_DATA_URL
