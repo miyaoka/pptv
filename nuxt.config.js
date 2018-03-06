@@ -1,5 +1,4 @@
 require('dotenv').config()
-const webpack = require('webpack')
 
 module.exports = {
   /*
@@ -34,17 +33,6 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-
-      config.plugins.push(
-        new webpack.EnvironmentPlugin([
-          'API_KEY',
-          'AUTH_DOMAIN',
-          'DATABASE_URL',
-          'PROJECT_ID',
-          'STORAGE_BUCKET',
-          'MESSAGING_SENDER_ID'
-        ])
-      )
     }
   }
 }

@@ -1,26 +1,27 @@
 <template>
   <section class="container">
-    <h1>videos</h1>
-    <div
-      v-for="(video, i) in videos"
-      :key="i">
-      {{video}}
-    </div>
+    <h1>articles</h1>
+    <entry-item
+      v-for="article in articles"
+      :key="article.id"
+      :article="article"
+    />
   </section>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import axios from 'axios'
+import EntryItem from '~/components/EntryItem.vue'
 
 export default {
-  fetch({ store }) {
-    store.dispatch('bindVideos')
+  components: {
+    EntryItem
   },
-  computed: {
-    ...mapGetters(['videos'])
-  },
-  methods: {
-    ...mapActions(['addVideo'])
+  async asyncData() {
+    const data = (await axios.get(process.env.PPTV_DATA_URL)).data
+    return {
+      articles: data.slice(0, 10)
+    }
   }
 }
 </script>
