@@ -4,21 +4,27 @@
     <small><a href="http://portal.nifty.com/cs/dpztv/list/1.htm" target="_blank" rel="noopener">プープーテレビ</a>の全動画を検索します</small>
 
     <div>
-      著者：<select v-model="selectedAuthor">
-        <option :value="null">All ({{allArticles.length}})</option>
-        <option
+      <div class="search">
+        <input v-model="search" placeholder="検索">
+      </div>
+
+      <div class="authors">
+        <button
+          @click="selectedAuthor = null"
+          :class="{selected: selectedAuthor === null}"
+        >All ({{allArticles.length}})</button>
+        <button
           v-for="author in authors"
           :key="author"
           :value="author"
-        >{{author}} ({{authorMap[author].length}})
-        </option>
-      </select>
-
-      検索：<input v-model="search">
+          @click="selectedAuthor = author"
+          :class="{selected: selectedAuthor === author}"
+        >{{author}}
+        </button>
+      </div>
 
       <no-ssr>
-        <div>
-          期間：
+        <div class="dateRange">
           <datepicker
             class="datePicker"
             v-model="dateSince"
@@ -37,17 +43,17 @@
         </div>
       </no-ssr>
 
-      <button
-        @click="isOlderFirst = !isOlderFirst"
-      >{{ isOlderFirst ? '▼古い順' : '▲新しい順' }}</button>
-
       →{{articles.length}}件
     </div>
     <div>
       <table>
         <thead>
           <tr>
-            <td>date</td>
+            <td>
+              <button
+                @click="isOlderFirst = !isOlderFirst"
+              >{{ isOlderFirst ? '▼古い順' : '▲新しい順' }}</button>
+            </td>
             <td>img</td>
             <td>author</td>
             <td>title</td>
@@ -187,18 +193,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.author {
-  border: 1px solid #999;
-  padding: 0.2rem;
-  outline: none;
-  font-size: 0.8rem;
-  opacity: 0.7;
-  &.selected {
-    background: #ffe;
-    opacity: 1;
-  }
-  &:hover {
-    cursor: pointer;
+.authors {
+  button {
+    border: none;
+    padding: 0.2rem;
+    outline: none;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    &.selected {
+      background: #ffe;
+      opacity: 1;
+    }
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 .datePicker {
