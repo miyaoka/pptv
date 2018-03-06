@@ -32,7 +32,7 @@
             <td>{{article.date | date}}</td>
             <td></td>
             <td>{{article.author}}</td>
-            <td><a :href="article.url | link">{{article.title}}</a></td>
+            <td><a :href="article.url | link" target="_blank" rel="noopener">{{article.title}}</a></td>
             <td>{{article.desc}}</td>
           </tr>
         </tbody>
