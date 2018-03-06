@@ -4,7 +4,7 @@
 
     <div>
       <select v-model="selectedAuthor">
-        <option :value="null">All ({{articles.length}})</option>
+        <option :value="null">All ({{allArticles.length}})</option>
         <option
           v-for="author in authors"
           :key="author"
