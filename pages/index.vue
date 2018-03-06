@@ -120,8 +120,14 @@ export default {
   computed: {
     ...mapState({ allArticles: 'articles' }),
     ...mapGetters(['authorMap']),
-    resetLoadTargets() {
-      return [this.selectedAuthor, this.search, this.dateSince, this.dateUntil].join()
+    articleFilters() {
+      return [
+        this.selectedAuthor,
+        this.search,
+        this.dateSince,
+        this.dateUntil,
+        this.isOlderFirst
+      ].join()
     },
     articles() {
       let articles = this.selectedAuthor ? this.authorMap[this.selectedAuthor] : this.allArticles
@@ -154,7 +160,7 @@ export default {
     }
   },
   watch: {
-    resetLoadTargets() {
+    articleFilters() {
       this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
       this.initShowCounts()
     }
