@@ -1,6 +1,10 @@
 require('dotenv').config()
 
 module.exports = {
+  modules: ['@nuxtjs/axios'],
+  env: {
+    PPTV_DATA_URL: process.env.PPTV_DATA_URL
+  },
   /*
   ** Headers of the page
   */

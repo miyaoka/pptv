@@ -13,6 +13,7 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^5.1.0",
     "axios": "^0.18.0",
     "dotenv": "^5.0.1",
     "luxon": "^0.5.3",
@@ -24,6 +25,8 @@
     "eslint": "^4.18.2",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^2.0.0",
-    "eslint-plugin-vue": "^4.3.0"
+    "eslint-plugin-vue": "^4.3.0",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.7"
   }
 }

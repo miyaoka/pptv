@@ -1,31 +1,97 @@
 <template>
   <section class="container">
     <h1>articles</h1>
-    <entry-item
-      v-for="article in articles"
-      :key="article.id"
-      :article="article"
-    />
+
+    <div>
+      <select v-model="selectedAuthor">
+        <option :value="null">All</option>
+        <option
+          v-for="author in authors"
+          :key="author"
+          :value="author"
+        >{{author}} ({{authorMap[author].length}})
+        </option>
+      </select>
+    </div>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <td>date</td>
+            <td>img</td>
+            <td>author</td>
+            <td>title</td>
+            <td>desc</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="article in articles"
+            :key="article.id"
+          >
+            <td>{{article.date | date}}</td>
+            <td></td>
+            <td>{{article.author}}</td>
+            <td><a :href="article.url | link">{{article.title}}</a></td>
+            <td>{{article.desc}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters, mapState } from 'vuex'
 import EntryItem from '~/components/EntryItem.vue'
+import { DateTime } from 'luxon'
 
+const baseUrl = 'http://portal.nifty.com'
 export default {
+  filters: {
+    date(time) {
+      return DateTime.fromMillis(time, { zone: 'Asia/Tokyo' }).toFormat('yyyy年MM月dd日')
+    },
+    link(url) {
+      return baseUrl + url
+    }
+  },
   components: {
     EntryItem
   },
-  async asyncData() {
-    const data = (await axios.get(process.env.PPTV_DATA_URL)).data
+  data() {
     return {
-      articles: data.slice(0, 10)
+      selectedAuthor: null
+    }
+  },
+  computed: {
+    ...mapState({ allArticles: 'articles' }),
+    ...mapGetters(['authorMap']),
+    articles() {
+      return this.selectedAuthor ? this.authorMap[this.selectedAuthor] : this.allArticles
+    },
+    authors() {
+      return Object.keys(this.authorMap).sort(
+        (a, b) => this.authorMap[b].length - this.authorMap[a].length
+      )
     }
   }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.author {
+  border: 1px solid #999;
+  padding: 0.2rem;
+  outline: none;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  &.selected {
+    background: #ffe;
+    opacity: 1;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
 </style>
