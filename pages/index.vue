@@ -37,6 +37,10 @@
         </div>
       </no-ssr>
 
+      <button
+        @click="isOlderFirst = !isOlderFirst"
+      >{{ isOlderFirst ? '▼古い順' : '▲新しい順' }}</button>
+
       →{{articles.length}}件
     </div>
     <div>
@@ -106,7 +110,8 @@ export default {
       dateSince: null,
       dateUntil: null,
       countPerPage: 30,
-      showCounts: 0
+      showCounts: 0,
+      isOlderFirst: false
     }
   },
   created() {
@@ -133,6 +138,9 @@ export default {
         articles = articles.filter((article) =>
           [article.title, article.desc].some((text) => text.match(r))
         )
+      }
+      if (this.isOlderFirst) {
+        articles = articles.slice().reverse()
       }
       return articles
     },
