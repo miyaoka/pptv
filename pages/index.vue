@@ -66,12 +66,15 @@
 
       <no-ssr>
         <infinite-loading @infinite="loadMore" ref="infiniteLoading">
+          <span slot="no-results">
+            no more articles
+          </span>
           <span slot="no-more">
             no more articles
           </span>
         </infinite-loading>
       </no-ssr>
-      <div>
+      <div class="page">
         {{pagedArticles.length}} / {{articles.length}}
       </div>
     </div>
@@ -186,5 +189,8 @@ export default {
 }
 .datePicker {
   display: inline-block;
+}
+.page {
+  text-align: center;
 }
 </style>
