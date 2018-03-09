@@ -15,7 +15,6 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.1.0",
     "axios": "^0.18.0",
-    "dotenv": "^5.0.1",
     "luxon": "^0.5.3",
     "nuxt": "^1.4.0",
     "vue-infinite-loading": "^2.2.3",

@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 module.exports = {
   plugins: ['~/plugins/infinite-loading.js', '~/plugins/datepicker.js'],
   modules: ['@nuxtjs/axios'],
