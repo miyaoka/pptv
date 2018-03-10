@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.1.0",
+    "@nuxtjs/google-analytics": "^2.0.2",
     "axios": "^0.18.0",
     "luxon": "^0.5.3",
     "nuxt": "^1.4.0",

@@ -1,6 +1,6 @@
 module.exports = {
   plugins: ['~/plugins/infinite-loading.js', '~/plugins/datepicker.js'],
-  modules: ['@nuxtjs/axios'],
+  modules: ['@nuxtjs/axios', ['@nuxtjs/google-analytics', { id: 'UA-3536169-22' }]],
   env: {
     PPTV_DATA_URL: process.env.PPTV_DATA_URL
   },
