@@ -17,6 +17,7 @@
     "@nuxtjs/google-analytics": "^2.0.2",
     "axios": "^0.18.0",
     "luxon": "^0.5.3",
+    "modern-normalize": "^0.4.0",
     "nuxt": "^1.4.0",
     "vue-infinite-loading": "^2.2.3",
     "vuejs-datepicker": "^0.9.29"

@@ -1,30 +1,40 @@
 <template>
   <section class="container">
-    <h1>プープーテレビ検索</h1>
-    <small><a href="http://portal.nifty.com/cs/dpztv/list/1.htm" target="_blank" rel="noopener">プープーテレビ</a>の全動画を検索します</small>
+    <header class="title">
+      <h1>プープーテレビ検索</h1>
+      <div><a href="http://portal.nifty.com/cs/dpztv/list/1.htm" target="_blank" rel="noopener">プープーテレビ</a>の全動画を検索します</div>
+    </header>
 
-    <div>
-      <div class="search">
-        <input v-model="search" placeholder="検索">
-      </div>
+    <div class="filters">
+      <section>
+        <h3>キーワード絞り込み</h3>
+        <div class="search">
+          <input v-model="search" placeholder="検索">
+        </div>
+      </section>
 
-      <div class="authors">
-        <button
-          @click="selectedAuthor = null"
-          :class="{selected: selectedAuthor === null}"
-        >All ({{allArticles.length}})</button>
-        <button
-          v-for="author in authors"
-          :key="author"
-          :value="author"
-          @click="selectedAuthor = author"
-          :class="{selected: selectedAuthor === author}"
-        >{{author}}
-        </button>
-      </div>
+      <section>
+        <h3>製作者別</h3>
+        <div class="authors">
+          <div
+            @click="selectAuthor(null)"
+            :class="{selected: selectedAuthor === null}"
+          >指定なし</div>
+          <hr>
+          <div
+            v-for="author in authors"
+            :key="author"
+            :value="author"
+            @click="selectAuthor(author)"
+            :class="{selected: selectedAuthor === author}"
+          >{{author}}
+          </div>
+        </div>
+      </section>
 
       <no-ssr>
-        <div class="dateRange">
+        <section class="dateRange">
+          <h3>日付別</h3>
           <datepicker
             class="datePicker"
             v-model="dateSince"
@@ -40,54 +50,64 @@
             placeholder="終了日"
             clear-button
           />
-        </div>
+        </section>
       </no-ssr>
 
-      →{{articles.length}}件
     </div>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <td>
-              <button
-                @click="isOlderFirst = !isOlderFirst"
-              >{{ isOlderFirst ? '▼古い順' : '▲新しい順' }}</button>
-            </td>
-            <td>img</td>
-            <td>author</td>
-            <td>title</td>
-            <td>desc</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
+
+    <main class="main">
+      <div v-if="pagedArticles.length > 0">
+        <div
+          class="date-order"
+          @click="isOlderFirst = !isOlderFirst"
+        >{{ isOlderFirst ? '▼古い順' : '▲新しい順' }}</div>
+
+        <div class="articles">
+          <div
             v-for="article in pagedArticles"
             :key="article.id"
+            class="article"
           >
-            <td>{{article.date | date}}</td>
-            <td><img :src="article.thumbnail | link"></td>
-            <td>{{article.author}}</td>
-            <td><a :href="article.url | link" target="_blank" rel="noopener">{{article.title}}</a></td>
-            <td>{{article.desc}}</td>
-          </tr>
-        </tbody>
-      </table>
+            <div>{{article.date | date}}</div>
+            <div>
+              <a :href="article.url | link" target="_blank" rel="noopener">
+                <img class="thumb" :src="article.thumbnail | link">
+              </a>
+            </div>
+            <div>
+              <span class="author" @click="selectAuthor(article.author)">{{article.author}}</span>
+            </div>
+            <div class="article-body">
+              <h3>
+                <a :href="article.url | link" target="_blank" rel="noopener">
+                  {{article.title}}
+                </a>
+              </h3>
+              <div>{{article.desc}}</div>
+            </div>
+          </div>
 
-      <no-ssr>
-        <infinite-loading @infinite="loadMore" ref="infiniteLoading">
-          <span slot="no-results">
-            no more articles
-          </span>
-          <span slot="no-more">
-            no more articles
-          </span>
-        </infinite-loading>
-      </no-ssr>
-      <div class="page">
-        {{pagedArticles.length}} / {{articles.length}}
+        </div>
+
+        <no-ssr>
+          <infinite-loading @infinite="loadMore" ref="infiniteLoading">
+            <span slot="no-results">
+              no more articles
+            </span>
+            <span slot="no-more">
+              no more articles
+            </span>
+          </infinite-loading>
+        </no-ssr>
+        <div class="page">
+          {{pagedArticles.length}} / {{articles.length}}
+        </div>
       </div>
-    </div>
+      <div v-else>
+        見つかりませんでした。
+      </div>
+    </main>
+
   </section>
 </template>
 
@@ -167,11 +187,16 @@ export default {
   },
   watch: {
     articleFilters() {
-      this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
+      if (this.$refs.infiniteLoading) {
+        this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
+      }
       this.initShowCounts()
     }
   },
   methods: {
+    selectAuthor(author) {
+      this.selectedAuthor = author
+    },
     initShowCounts() {
       this.showCounts = this.countPerPage
     },
@@ -193,26 +218,91 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.authors {
-  button {
-    border: none;
-    padding: 0.2rem;
-    outline: none;
-    font-size: 0.8rem;
-    opacity: 0.7;
-    &.selected {
-      background: #ffe;
-      opacity: 1;
-    }
-    &:hover {
-      cursor: pointer;
+@import '~assets/css/mixin/_mediaquery.scss';
+@import '~assets/css/_vars.scss';
+
+.title {
+  background: $clr-1;
+  text-align: center;
+  padding: 1rem;
+}
+.filters {
+  background: $clr-2;
+  padding: 1rem;
+
+  display: grid;
+  grid-gap: 1rem;
+
+  .authors {
+    div {
+      display: inline-block;
+      padding: 0.2rem;
+      font-size: 1rem;
+      &.selected {
+        background: $clr-3;
+        color: $clr-w-l;
+      }
+      &:hover {
+        color: $clr-w-l;
+        background: $clr-3-d;
+        cursor: pointer;
+      }
     }
   }
+  .datePicker {
+    display: inline-block;
+  }
 }
-.datePicker {
-  display: inline-block;
-}
-.page {
-  text-align: center;
+
+.main {
+  padding: 1rem;
+  background: $clr-w-ll;
+  color: $clr-b;
+
+  .date-order {
+    display: inline-block;
+  }
+  .author {
+  }
+
+  .date-order,
+  .author {
+    &:hover {
+      cursor: pointer;
+      background: $clr-2;
+    }
+  }
+
+  .article {
+    display: grid;
+    grid-template-columns: 80px 70px 80px auto;
+    grid-gap: 0.5rem;
+    font-size: 0.9rem;
+
+    @include mq() {
+      grid-template-columns: auto;
+      grid-template-rows: auto;
+      margin: 1rem 0;
+    }
+
+    &-body {
+      a {
+        display: block;
+        color: $clr-b-d;
+        font-size: 1.4rem;
+        margin-bottom: 0.2rem;
+        &:hover {
+          // background: $clr-1;
+          color: $clr-3-d;
+        }
+      }
+    }
+    .thumb {
+      width: 70px;
+    }
+  }
+  .page {
+    text-align: center;
+  }
 }
 </style>
