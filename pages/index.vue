@@ -59,8 +59,8 @@
       <div v-if="pagedArticles.length > 0">
         <div
           class="date-order"
-          @click="isOlderFirst = !isOlderFirst"
-        >{{ isOlderFirst ? '▼古い順' : '▲新しい順' }}</div>
+          @click="dateAsc = !dateAsc"
+        >{{ dateAsc ? '▼古い順' : '▲新しい順' }}</div>
 
         <div class="articles">
           <div
@@ -137,23 +137,18 @@ export default {
       dateUntil: null,
       countPerPage: 30,
       showCounts: 0,
-      isOlderFirst: false
+      dateAsc: false
     }
   },
   created() {
     this.initShowCounts()
+    this.queryToData()
   },
   computed: {
     ...mapState({ allArticles: 'articles' }),
     ...mapGetters(['authorMap']),
     articleFilters() {
-      return [
-        this.selectedAuthor,
-        this.search,
-        this.dateSince,
-        this.dateUntil,
-        this.isOlderFirst
-      ].join()
+      return [this.selectedAuthor, this.search, this.dateSince, this.dateUntil, this.dateAsc].join()
     },
     articles() {
       let articles = this.selectedAuthor ? this.authorMap[this.selectedAuthor] : this.allArticles
@@ -171,7 +166,7 @@ export default {
           [article.title, article.desc].some((text) => text.match(r))
         )
       }
-      if (this.isOlderFirst) {
+      if (this.dateAsc) {
         articles = articles.slice().reverse()
       }
       return articles
@@ -191,9 +186,32 @@ export default {
         this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
       }
       this.initShowCounts()
+      this.dataToQuery()
     }
   },
   methods: {
+    queryToData() {
+      const q = this.$route.query
+      this.search = q.q || ''
+      this.selectedAuthor = q.author
+      this.dateSince = q.since && parseInt(q.since, 10)
+      this.dateUntil = q.until && parseInt(q.until, 10)
+      this.dateAsc = q.asc === 'true'
+    },
+    dataToQuery() {
+      const query = {
+        q: this.search,
+        author: this.selectedAuthor,
+        since: this.dateSince && this.dateSince.valueOf(),
+        until: this.dateUntil && this.dateUntil.valueOf(),
+        asc: this.dateAsc
+      }
+      this.$router.push({
+        query: Object.keys(query)
+          .filter((k) => query[k])
+          .reduce((prev, curr) => ({ ...prev, [curr]: query[curr] }), {})
+      })
+    },
     selectAuthor(author) {
       this.selectedAuthor = author
     },
